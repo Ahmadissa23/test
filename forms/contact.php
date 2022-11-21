@@ -1,18 +1,21 @@
-<?php 
-if(isset($_POST['submit'])){
+<?php
+	$name = $_POST['name'];
+	$email = $_POST['email'];
+	$subject =$_['subject'];
+	$message = $_POST['message'];
 
-
-$name = $_POST['Your Name'];
-$subject = $_POST['Subject'];
-$mailFrom = $_POST['mail'];
-$message = $_POST['message'];
-
-$mailTo = "abuissa200096@gmail.com";
-$headers = "From: ".$mailFrom
-
-$txt = "you have received an email from ".$name".\n\n".$message;
-mail($mailTo,$subject,$txt,$headers);
-header("location: index.html?mailsend");
-
-  echo $contact->send();
+	// Database connection
+	$conn = new mysqli('localhost','root','','form');
+	if($conn->connect_error){
+		echo "$conn->connect_error";
+		die("Connection Failed : ". $conn->connect_error);
+	} else {
+		$stmt = $conn->prepare("insert into registration(name,email,subject,message) values(?, ?, ?, ?)");
+		$stmt->bind_param("ssss", $name,$email, $subject, $message);
+		$execval = $stmt->execute();
+		echo $execval;
+		echo "Registration successfully...";
+		$stmt->close();
+		$conn->close();
+	}
 ?>
